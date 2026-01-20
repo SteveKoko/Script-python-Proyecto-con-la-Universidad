@@ -4,13 +4,37 @@ import time
 import os
 import sys
 import threading
+from datetime import datetime
+
 
 class InactivityMonitor:
     def __init__(self):
         self.interval_minutes = 0
         self.response_received = False
         self.shutdown_timer = None
-        
+
+        # Crear directorio de logs en ProgramData (accesible para todos los usuarios)
+        self.log_dir = os.path.join(os.environ.get(
+            'PROGRAMDATA', 'C:\\ProgramData'), 'InactivityMonitor')
+        try:
+            os.makedirs(self.log_dir, exist_ok=True)
+        except Exception as e:
+            print(f"No se pudo crear el directorio de logs: {e}")
+            # Fallback al directorio del script
+            self.log_dir = os.path.dirname(os.path.abspath(__file__))
+
+        self.log_file = os.path.join(self.log_dir, "apagados_log.txt")
+
+    def log_shutdown(self):
+        """Registra el apagado en el archivo de log"""
+        try:
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            with open(self.log_file, 'a', encoding='utf-8') as f:
+                f.write(f"[{timestamp}] Apagado automático por inactividad\n")
+            print(f"Log guardado en: {self.log_file}")
+        except Exception as e:
+            print(f"Error al escribir en el log: {e}")
+
     def get_interval(self):
         """Pide al usuario el intervalo de verificación"""
         root = tk.Tk()
@@ -18,20 +42,21 @@ class InactivityMonitor:
         root.geometry("450x250")
         root.configure(bg="#2b2b2b")
         root.resizable(False, False)
-        
+
         # Centrar la ventana
         root.update_idletasks()
         x = (root.winfo_screenwidth() // 2) - (450 // 2)
         y = (root.winfo_screenheight() // 2) - (250 // 2)
         root.geometry(f"450x250+{x}+{y}")
-        
+
         # Borde amarillo brillante
         border_frame = tk.Frame(root, bg="#FFD700", bd=0)
         border_frame.place(x=0, y=0, relwidth=1, relheight=1)
-        
+
         inner_frame = tk.Frame(border_frame, bg="#2b2b2b", bd=0)
-        inner_frame.place(x=4, y=4, relwidth=1, relheight=1, width=-8, height=-8)
-        
+        inner_frame.place(x=4, y=4, relwidth=1,
+                          relheight=1, width=-8, height=-8)
+
         # Título
         title_label = tk.Label(
             inner_frame,
@@ -41,7 +66,7 @@ class InactivityMonitor:
             bg="#2b2b2b"
         )
         title_label.pack(pady=(20, 10))
-        
+
         # Etiqueta de instrucción
         instruction_label = tk.Label(
             inner_frame,
@@ -52,11 +77,11 @@ class InactivityMonitor:
             justify="center"
         )
         instruction_label.pack(pady=10)
-        
+
         # Frame para entrada
         entry_frame = tk.Frame(inner_frame, bg="#2b2b2b")
         entry_frame.pack(pady=10)
-        
+
         entry_var = tk.StringVar()
         entry = tk.Entry(
             entry_frame,
@@ -70,7 +95,7 @@ class InactivityMonitor:
             justify="center"
         )
         entry.pack(pady=5)
-        
+
         error_label = tk.Label(
             inner_frame,
             text="",
@@ -79,7 +104,7 @@ class InactivityMonitor:
             bg="#2b2b2b"
         )
         error_label.pack()
-        
+
         def validate_and_start():
             try:
                 interval = int(entry_var.get())
@@ -87,14 +112,15 @@ class InactivityMonitor:
                     self.interval_minutes = interval
                     root.destroy()
                 else:
-                    error_label.config(text="Por favor ingrese un número entre 1 y 1440")
+                    error_label.config(
+                        text="Por favor ingrese un número entre 1 y 1440")
             except ValueError:
                 error_label.config(text="Por favor ingrese un número válido")
-        
+
         # Frame para botones
         buttons_frame = tk.Frame(inner_frame, bg="#2b2b2b")
         buttons_frame.pack(pady=10)
-        
+
         # Botón de confirmar
         start_button = tk.Button(
             buttons_frame,
@@ -111,7 +137,7 @@ class InactivityMonitor:
             cursor="hand2"
         )
         start_button.pack(side="left", padx=5)
-        
+
         # Botón de salir
         exit_button = tk.Button(
             buttons_frame,
@@ -128,51 +154,53 @@ class InactivityMonitor:
             cursor="hand2"
         )
         exit_button.pack(side="left", padx=5)
-        
+
         entry.bind('<Return>', lambda e: validate_and_start())
         entry.focus()
-        
+
         root.protocol("WM_DELETE_WINDOW", lambda: (root.destroy(), sys.exit()))
         root.mainloop()
-        
+
         return self.interval_minutes
-    
+
     def shutdown_computer(self):
         """Apaga el ordenador con Windows"""
+        self.log_shutdown()  # Registrar el apagado antes de apagar
         time.sleep(3)
         os.system("shutdown /s /t 0")
-    
+
     def cancel_shutdown(self, dialog):
         """El usuario respondió - cancelar el apagado"""
         self.response_received = True
         if self.shutdown_timer:
             self.shutdown_timer.cancel()
         dialog.destroy()
-    
+
     def create_activity_dialog(self):
         """Crea el diálogo de verificación de actividad"""
         self.response_received = False
-        
+
         dialog = tk.Tk()
         dialog.title("Verificación de Actividad")
         dialog.geometry("550x480")
         dialog.configure(bg="#2b2b2b")
         dialog.attributes('-topmost', True)
         dialog.resizable(False, False)
-        
+
         # Centrar la ventana
         dialog.update_idletasks()
         x = (dialog.winfo_screenwidth() // 2) - (550 // 2)
         y = (dialog.winfo_screenheight() // 2) - (480 // 2)
         dialog.geometry(f"550x480+{x}+{y}")
-        
+
         # Borde amarillo brillante
         border_frame = tk.Frame(dialog, bg="#FFD700", bd=0)
         border_frame.place(x=0, y=0, relwidth=1, relheight=1)
-        
+
         inner_frame = tk.Frame(border_frame, bg="#2b2b2b", bd=0)
-        inner_frame.place(x=4, y=4, relwidth=1, relheight=1, width=-8, height=-8)
-        
+        inner_frame.place(x=4, y=4, relwidth=1,
+                          relheight=1, width=-8, height=-8)
+
         # Etiqueta de advertencia
         label = tk.Label(
             inner_frame,
@@ -182,7 +210,7 @@ class InactivityMonitor:
             bg="#2b2b2b"
         )
         label.pack(pady=(35, 15))
-        
+
         warning_label = tk.Label(
             inner_frame,
             text="¡El ordenador se apagará si no respondes!",
@@ -191,7 +219,7 @@ class InactivityMonitor:
             bg="#2b2b2b"
         )
         warning_label.pack(pady=8)
-        
+
         # Etiqueta de cuenta regresiva
         countdown_label = tk.Label(
             inner_frame,
@@ -201,11 +229,11 @@ class InactivityMonitor:
             bg="#2b2b2b"
         )
         countdown_label.pack(pady=25)
-        
+
         # Botón principal amarillo
         button_frame = tk.Frame(inner_frame, bg="#2b2b2b")
         button_frame.pack(pady=20)
-        
+
         response_button = tk.Button(
             button_frame,
             text="¡Sí, estoy aquí!",
@@ -222,18 +250,18 @@ class InactivityMonitor:
             pady=18
         )
         response_button.pack()
-        
+
         # Botón de salir
         exit_frame = tk.Frame(inner_frame, bg="#2b2b2b")
         exit_frame.pack(pady=20)
-        
+
         def exit_program():
             self.response_received = True
             if self.shutdown_timer:
                 self.shutdown_timer.cancel()
             dialog.destroy()
             sys.exit()
-        
+
         exit_button = tk.Button(
             exit_frame,
             text="Salir",
@@ -250,50 +278,51 @@ class InactivityMonitor:
             pady=12
         )
         exit_button.pack()
-        
+
         # Lógica de cuenta regresiva
         remaining_time = [60]
-        
+
         def update_countdown():
             if remaining_time[0] > 0 and not self.response_received:
                 remaining_time[0] -= 1
                 countdown_label.config(text=str(remaining_time[0]))
-                
+
                 # Cambiar color cuando quedan menos de 10 segundos
                 if remaining_time[0] <= 10:
                     countdown_label.config(fg="#ff4444")
-                
+
                 dialog.after(1000, update_countdown)
             elif remaining_time[0] == 0 and not self.response_received:
                 dialog.destroy()
-        
+
         # Iniciar visualización de cuenta regresiva
         dialog.after(1000, update_countdown)
-        
+
         # Programar apagado después de 60 segundos
         self.shutdown_timer = threading.Timer(60.0, self.shutdown_computer)
         self.shutdown_timer.start()
-        
+
         dialog.protocol("WM_DELETE_WINDOW", lambda: None)
         dialog.mainloop()
-    
+
     def run(self):
         """Bucle principal de monitoreo"""
         interval = self.get_interval()
-        
+
         try:
             while True:
                 # Esperar el intervalo especificado
                 time.sleep(interval * 60)
-                
+
                 # Mostrar diálogo de actividad
                 self.create_activity_dialog()
-                
+
         except KeyboardInterrupt:
             sys.exit()
 
+
 if __name__ == "__main__":
     import tkinter.simpledialog
-    
+
     monitor = InactivityMonitor()
     monitor.run()
