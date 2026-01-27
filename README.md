@@ -33,7 +33,7 @@ Este programa fue diseñado para **reducir el consumo energético** de tu ordena
 - [💻 Instalación](#-instalación)
 - [🚀 Uso](#-uso)
 - [⚙️ Configuración](#️-configuración)
-- [📊 Registro de Apagados](#-registro-de-apagados)
+- [📊 Registro de Apagados (Sistema de Logs)](#-registro-de-apagados-sistema-de-logs) ⭐ **¡MEJORADO!**
 - [🌟 Beneficios Ambientales](#-beneficios-ambientales)
 - [❓ Preguntas Frecuentes](#-preguntas-frecuentes)
 - [🤝 Contribuir](#-contribuir)
@@ -60,7 +60,7 @@ Este programa fue diseñado para **reducir el consumo energético** de tu ordena
 - Intervalos de verificación personalizables
 - Cuenta regresiva visual de 60 segundos
 - Sistema de alertas progresivas
-- Registro automático de apagados
+- **Registro automático de apagados** 📝
 
 </td>
 </tr>
@@ -71,7 +71,7 @@ Este programa fue diseñado para **reducir el consumo energético** de tu ordena
 - Confirmación antes del apagado
 - Opción de cancelación en cualquier momento
 - No requiere permisos de administrador
-- Logs detallados de actividad
+- **Logs detallados de actividad** 📋
 
 </td>
 <td width="50%">
@@ -164,7 +164,7 @@ El programa utiliza **únicamente bibliotecas estándar de Python**, por lo que 
 | `threading` | ✓ | Hilos para temporizador | ✅ Sí |
 | `datetime` | ✓ | Registro de fechas/horas | ✅ Sí |
 
-> 🎉 **¡Ventaja! ** No necesitas ejecutar `pip install` para nada. Todo viene incluido con Python.
+> 🎉 **¡Ventaja!** No necesitas ejecutar `pip install` para nada. Todo viene incluido con Python.
 
 ### 💻 Sistema Operativo
 
@@ -183,15 +183,15 @@ El programa utiliza **únicamente bibliotecas estándar de Python**, por lo que 
 1. **Descarga el archivo:**
    ```bash
    # Clona el repositorio o descarga el archivo directamente
-   git clone https://github.com/tu-usuario/inactivity-monitor.git
-   cd inactivity-monitor
+   git clone https://github.com/SteveKoko/Script-python-Proyecto-con-la-Universidad.git
+   cd Script-python-Proyecto-con-la-Universidad
    ```
 
 2. **Verifica que tienes Python instalado:**
    ```bash
    python --version
    ```
-   Deberías ver algo como:  `Python 3.x.x`
+   Deberías ver algo como: `Python 3.x.x`
 
 3. **¡Listo para usar!** 🎉
 
@@ -209,7 +209,7 @@ Estamos trabajando en una versión ejecutable (`.exe`) que no requiere Python in
 
 2. **Ejecuta el script:**
    ```bash
-   python inactivity_monitor.py
+   python script.py
    ```
 
 3. **Configura el intervalo:**
@@ -223,7 +223,7 @@ Estamos trabajando en una versión ejecutable (`.exe`) que no requiere Python in
    - Esperará el tiempo configurado
    - Mostrará una alerta preguntando si sigues ahí
    - Si respondes, el ciclo continúa
-   - Si no respondes en 60 segundos, el PC se apagará
+   - Si no respondes en 60 segundos, **el PC se apagará y se registrará en el log** 📝
 
 ### 🛑 Detener el Programa
 
@@ -245,151 +245,232 @@ Puedes detener el programa de dos formas:
 | 🌙 Nocturno | 10-15 minutos | Descargas o tareas nocturnas |
 | 🎮 Gaming | 60-120 minutos | Sesiones largas de juego |
 
-### 📁 Ubicación de Archivos
+---
+
+## 📊 Registro de Apagados (Sistema de Logs)
+
+<div align="center">
 
 ```
-📂 C:\ProgramData\InactivityMonitor\
-└── 📄 apagados_log.txt (registro de apagados)
+╔════════════════════════════════════════════════════╗
+║     📝 SISTEMA INTELIGENTE DE REGISTRO DE LOGS     ║
+║           ¡Nunca pierdas el rastro! 🕵️            ║
+╚════════════════════════════════════════════════════╝
 ```
 
-Si no se puede crear en `ProgramData`, el log se guardará en la carpeta del script.
+</div>
+
+### 🎯 ¿Qué es el Sistema de Logs?
+
+El **Sistema de Registro de Apagados** es una funcionalidad incorporada que automáticamente **registra cada vez que el ordenador se apaga** por inactividad. Esto te permite:
+
+- 📈 **Rastrear** cuántas veces se ha apagado tu PC
+- 📅 **Analizar** patrones de uso y tiempos de inactividad
+- 💡 **Optimizar** los intervalos de verificación
+- 🔍 **Auditar** el comportamiento del sistema
+- 💾 **Mantener** un historial permanente
 
 ---
 
-## 📊 Registro de Apagados
-
-El programa mantiene un registro detallado de todos los apagados automáticos:
-
-### 📄 Formato del Log
+### 🏗️ Arquitectura del Sistema de Logs
 
 ```
-[2026-01-20 14:35:22] Apagado automático por inactividad
+┌─────────────────────────────────────────────────────────────┐
+│                  FLUJO DEL SISTEMA DE LOGS                  │
+└─────────────────────────────────────────────────────────────┘
+
+    Inicio del Programa
+           │
+           ▼
+    ┌──────────────────────┐
+    │  __init__()          │
+    │  Inicializar Sistema │
+    └──────────┬───────────┘
+               │
+               ├──► 1️⃣ Detectar directorio ProgramData
+               │       └─► C:\ProgramData
+               │
+               ├──► 2️⃣ Crear carpeta InactivityMonitor
+               │       └─► C:\ProgramData\InactivityMonitor
+               │
+               └──► 3️⃣ Definir archivo de log
+                       └─► C:\ProgramData\InactivityMonitor\apagados_log.txt
+
+    ⏰ Tiempo de inactividad detectado
+           │
+           ▼
+    ┌──────────────────────┐
+    │  log_shutdown()      │ ◄── Función que guarda el registro
+    └──────────┬───────────┘
+               │
+               ├──► 1️⃣ Obtener timestamp actual
+               │       └─► datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+               │
+               ├──► 2️⃣ Abrir archivo en modo append ('a')
+               │       └─► Añade sin borrar datos anteriores
+               │
+               ├──► 3️⃣ Escribir línea de log
+               │       └─► [2026-01-27 14:30:45] Apagado automático...
+               │
+               └──► 4️⃣ Cerrar archivo automáticamente
+                       └─► Garantiza integridad de datos
+
+           ▼
+    ┌──────────────────────┐
+    │  shutdown_computer() │
+    └──────────────────────┘
+```
+
+---
+
+### 📂 Ubicaciones de Almacenamiento
+
+El sistema implementa un **mecanismo de respaldo inteligente** con dos ubicaciones posibles:
+
+#### 🥇 Ubicación Principal (Prioridad 1)
+
+```
+═══════════════════════════════════════════════════════════════
+🎯 UBICACIÓN PRINCIPAL
+═══════════════════════════════════════════════════════════════
+
+📍 Ruta Completa:
+   C:\ProgramData\InactivityMonitor\apagados_log.txt
+
+📂 Estructura de Carpetas:
+   C:\
+   └── ProgramData\
+       └── InactivityMonitor\  ◄── Carpeta del programa
+           └── apagados_log.txt ◄── Archivo de log
+
+✅ Ventajas:
+   • Accesible para todos los usuarios del sistema
+   • Ubicación estándar para datos de aplicaciones
+   • No se borra con actualizaciones del programa
+   • Persiste entre sesiones de usuario
+
+⚙️ Variables de Entorno Utilizadas:
+   os.environ.get('PROGRAMDATA', 'C:\\ProgramData')
+   
+   └─► Detecta automáticamente la ubicación de ProgramData
+       en diferentes versiones de Windows
+═══════════���═══════════════════════════════════════════════════
+```
+
+#### 🥈 Ubicación de Respaldo (Fallback)
+
+```
+═══════════════════════════════════════════════════════════════
+🔄 UBICACIÓN DE RESPALDO (FALLBACK)
+═══════════════════════════════════════════════════════════════
+
+📍 Ruta:
+   [Carpeta donde está script.py]\apagados_log.txt
+
+📂 Ejemplo:
+   C:\Users\TuUsuario\Desktop\Monitor\
+   └── script.py
+   └── apagados_log.txt  ◄── Se crea aquí si falla ProgramData
+
+⚠️ Cuándo se usa:
+   • Si no hay permisos para crear carpeta en ProgramData
+   • Si la variable PROGRAMDATA no está definida
+   • Si ocurre cualquier error al crear el directorio
+
+🔧 Implementación en el Código:
+   try:
+       os.makedirs(self.log_dir, exist_ok=True)
+   except Exception as e:
+       print(f"No se pudo crear el directorio de logs: {e}")
+       # FALLBACK: Usa el directorio del script
+       self.log_dir = os.path.dirname(os.path.abspath(__file__))
+═══════════════════════════════════════════════════════════════
+```
+
+#### 🔍 Cómo Encontrar tu Archivo de Log
+
+```powershell
+# Método 1: Explorador de Windows
+1. Presiona Win + R
+2. Escribe: %PROGRAMDATA%
+3. Busca la carpeta "InactivityMonitor"
+
+# Método 2: Símbolo del Sistema
+1. Abre CMD
+2. Ejecuta: cd %PROGRAMDATA%\InactivityMonitor
+3. Ejecuta: dir apagados_log.txt
+
+# Método 3: PowerShell
+Get-Content "C:\ProgramData\InactivityMonitor\apagados_log.txt"
+```
+
+---
+
+### 📄 Formato del Archivo de Log
+
+#### 🎨 Estructura de una Entrada
+
+```
+┌────────────────────────────────────────────────────────┐
+│              ANATOMÍA DE UNA LÍNEA DE LOG              │
+└────────────────────────────────────────────────────────┘
+
+[2026-01-27 14:30:45] Apagado automático por inactividad
+ └──────┬──────┘ └─┬─┘ └────────────┬────────────────┘
+        │          │                 │
+        │          │                 └──► Mensaje descriptivo
+        │          │
+        │          └────────────────────► Hora (HH:MM:SS)
+        │
+        └───────────────────────────────► Fecha (YYYY-MM-DD)
+
+═══════════════════════════════════════════════════════════
+
+🔤 Formato de Timestamp:
+   "%Y-%m-%d %H:%M:%S"
+   
+   Componentes:
+   • %Y = Año (4 dígitos)     → 2026
+   • %m = Mes (2 dígitos)     → 01
+   • %d = Día (2 dígitos)     → 27
+   • %H = Hora (00-23)        → 14
+   • %M = Minuto (00-59)      → 30
+   • %S = Segundo (00-59)     → 45
+
+💬 Mensaje Estándar:
+   "Apagado automático por inactividad"
+   • Texto fijo y consistente
+   • Fácil de buscar y filtrar
+   • Idioma: Español
+```
+
+#### 📖 Ejemplo de Archivo Real
+
+````txt
+═══════════════════════════════════════════════════════════
+📄 apagados_log.txt - EJEMPLO REAL
+═══════════════════════════════════════════════════════════
+
+[2026-01-20 09:15:33] Apagado automático por inactividad
+[2026-01-20 14:30:22] Apagado automático por inactividad
 [2026-01-20 18:45:10] Apagado automático por inactividad
-[2026-01-21 09:15:33] Apagado automático por inactividad
-```
+[2026-01-21 10:22:55] Apagado automático por inactividad
+[2026-01-21 13:40:18] Apagado automático por inactividad
+[2026-01-22 08:55:42] Apagado automático por inactividad
+[2026-01-22 17:10:05] Apagado automático por inactividad
+[2026-01-23 11:25:30] Apagado automático por inactividad
+[2026-01-24 15:50:12] Apagado automático por inactividad
+[2026-01-25 12:05:48] Apagado automático por inactividad
 
-### 📈 Beneficios del Registro
+═══════════════════════════════════════════════════════════
 
-- **📅 Histórico completo** de apagados
-- **⏱️ Timestamps precisos** de cada evento
-- **📊 Análisis de patrones** de uso
-- **💡 Optimización** de intervalos
+📊 Análisis de este Log:
+   • Total de apagados: 10
+   • Período: 6 días (20-25 enero)
+   • Promedio: ~1.7 apagados por día
+   • Horarios más comunes: Tarde (14:00-18:00)
 
----
-
-## 🌟 Beneficios Ambientales
-
-### 🌍 Impacto Ecológico
-
-<div align="center">
-
-```
-Un ordenador encendido consume entre 60-300W por hora
-
-┌─────────────────────────────────────────┐
-│  8 horas inactivas al mes ≈ 2.4 kWh     │
-│  96 horas inactivas al año ≈ 28.8 kWh   │
-│                                          │
-│  💰 Ahorro anual:  ~5-15€                │
-│  🌱 CO₂ evitado: ~10-15 kg/año          │
-└─────────────────────────────────────────┘
-```
-
-</div>
-
-### 🎯 Objetivos de Desarrollo Sostenible
-
-Este proyecto contribuye a:
-
-- 🔌 **ODS 7:** Energía asequible y no contaminante
-- 🌡️ **ODS 13:** Acción por el clima
-- ♻️ **ODS 12:** Producción y consumo responsables
-
----
-
-## ❓ Preguntas Frecuentes
-
-<details>
-<summary><b>❓ ¿Puedo usar este programa en Mac o Linux?</b></summary>
-
-Actualmente el programa está diseñado para Windows.  Para adaptarlo a otros sistemas, necesitarías modificar el comando de apagado: 
-- **Linux:** `os.system("shutdown -h now")`
-- **Mac:** `os.system("sudo shutdown -h now")`
-
-</details>
-
-<details>
-<summary><b>❓ ¿El programa se inicia automáticamente con Windows?</b></summary>
-
-No, debes iniciarlo manualmente.  Si deseas que se inicie automáticamente, puedes:
-1. Crear un acceso directo del script
-2. Colocarlo en la carpeta de inicio:  `C:\Users\TuUsuario\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`
-
-</details>
-
-<details>
-<summary><b>❓ ¿Qué pasa si estoy jugando o viendo una película?</b></summary>
-
-El programa mostrará la alerta de verificación.  Simplemente haz clic en "¡Sí, estoy aquí!" y el monitoreo continuará. Es una buena idea configurar intervalos más largos si planeas sesiones largas. 
-
-</details>
-
-<details>
-<summary><b>❓ ¿El programa consume muchos recursos?</b></summary>
-
-No.  El programa es muy ligero y consume recursos mínimos, ya que pasa la mayor parte del tiempo en "espera" sin ejecutar operaciones intensivas.
-
-</details>
-
-<details>
-<summary><b>❓ ¿Puedo cambiar los colores o el diseño?</b></summary>
-
-¡Por supuesto! El código está bien comentado y puedes modificar los colores en las secciones donde se definen los parámetros `bg` (background/fondo) y `fg` (foreground/texto).
-
-</details>
-
----
-
-## 🤝 Contribuir
-
-¡Las contribuciones son bienvenidas! 🎉
-
-### 💡 Formas de Contribuir
-
-- 🐛 **Reportar bugs**
-- ✨ **Sugerir nuevas características**
-- 📝 **Mejorar la documentación**
-- 🔧 **Enviar pull requests**
-
-### 📬 Contacto
-
-¿Tienes preguntas o sugerencias? ¡Abre un issue! 
-
----
-
-## 📜 Licencia
-
-Este proyecto está bajo la Licencia MIT - consulta el archivo `LICENSE` para más detalles.
-
-```
-MIT License - Libre de usar, modificar y distribuir
-```
-
----
-
-<div align="center">
-
-## 💚 Hecho con amor por el planeta 🌍
-
-### _Si este proyecto te ayudó a ahorrar energía, considera darle una ⭐_
-
----
-
-**🐍 Python** • **💚 Eco-Friendly** • **💡 Smart Energy**
-
-```python
-# ¡Gracias por usar el Monitor de Inactividad! 
-print("🌱 Cada kilovatio ahorrado cuenta 🌱")
-```
-
-</div>
+💡 Interpretación:
+   El usuario tiende a dejar el PC encendido durante las
+   tardes, lo que indica que podría optimizar el intervalo
+   de verificación en ese horario.
